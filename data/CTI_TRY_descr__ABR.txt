@@ -1,0 +1,5 @@
+Dati grezzi utilizzati per la costruzione dell’anno tipo:
+• Stazione dell'Aquila (AQ): 11anni (dal 2000 al 2010)
+• Stazione di Chieti (CH): 11 anni (dal 2000 al 2010)
+• Stazione di Pescara (PE): 4 anni (dal 2007 al 2010)
+• Stazione di Teramo (TE): 11anni (dal 2000 al 2010)

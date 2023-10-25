@@ -1,0 +1,16 @@
+Weather data morphing is a method to produce design weather data for building thermal simulations that accounts for future changes to climate. It combines present-day observed weather data with results from climate models <sup>12</sup>.
+PROMETHEUS is a project based in the University of Exeter that has created a number of future weather files using the UKCP09 weather generator <sup>34</sup>. These files can be used to test how future-proof buildings are against predicted climate change34.
+
+**Meteonorm** is a software that uses data from weather stations, satellites and interpolation models to deliver global weather data <sup>567</sup>.
+
+The **Future Weather Generator** is a web tool that allows users to generate future weather data for any location in the world using different climate models and scenarios. It is developed by the ADA AI Research Centre at the Polytechnic Institute of Coimbra.
+
+<br>
+
+**Fonti / References**
+1 
+2 https://www.osti.gov/etdeweb/biblio/20612858
+3 https://engineering.exeter.ac.uk/research/cee/research/prometheus/downloads/
+4 https://engineering.exeter.ac.uk/research/cee/research/prometheus/
+7 https://adai.pt/future-weather-generator/documentation/
+ 

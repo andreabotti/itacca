@@ -1,0 +1,15 @@
+I files, disponibile in download, comprende un archivio XLS contenente i dati orari dell’anno tipo climatico per le Province della Regione Abruzzo.
+
+L’anno tipo climatico consiste in 12 mesi caratteristici scelti da un database di dati meteorologici di un periodo che dovrebbe essere, preferibilmente ampio almeno 10 anni. La metodologia di calcolo utilizzata è quella riportata nella norma europea EN ISO 15927-4 “Hygrothermal performance of buildings - Calculation and presentation of climatic data - Part 4: Hourly data for assessing the annual energy use for heating and cooling”.
+
+L’archivio, scaricabile gratuitamente, contiene record orari delle seguenti variabili meteorologiche:
+• temperatura; 
+• irradianza solare diretta su piano orizzontale;
+• irradianza solare diffusa su piano orizzontale; 
+• irradianza solare globale su piano orizzontale;  
+• umidità relativa;
+• pressione parziale di vapore;
+• velocità del vento.
+
+Al Progetto hanno partecipato gli Esperti della Commissione tecnica (CT) 102 “Isolanti e isolamento - Metodi di calcolo e di prova (UNI/TS 11300-1)” del CTI e in particolare del suo Sotto-Gruppo (SG) 9 “Dati climatici” che funge anche da mirror al CEN/TC 89/WG9 (dati climatici). 
+L’attività è stata svolta nell’ambito della ricerca di sistema promossa dal Ministero dello Sviluppo Economico e da ENEA.

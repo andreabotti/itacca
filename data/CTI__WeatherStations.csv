@@ -1,0 +1,111 @@
+province,city,reg,alt,lon,lat
+AQ,L'Aquila,AB,700.0,13.24,42.21
+CH,Chieti,AB,325.0,14.10,42.21
+PE,Pescara,AB,5.0,14.13,42.28
+TE,Teramo,AB,275.0,13.42,42.40
+PZ,Oppido Lucano,BC,767.0,15.58,40.45
+MT,Matera,BC,475.0,16.29,40.39
+CS,Fitterizi,CL,185.0,16.8,39.31
+CZ,Chiaravalle Centrale,CL,714.0,16.24,38.40
+KR,Crotone,CL,10.0,17.7,39.5
+RC,Reggio Calabria,CL,15.0,15.39,38.6
+VV,Vibo Valentia,CL,498.0,16.6,38.40
+AV,Mirabella Eclano,CM,309.0,14.59,41.2
+BN,Airola,CM,270.0,14.33,41.3
+CE,Vitulazio,CM,65.0,14.12,41.9
+SA,Battipaglia,CM,55.0,14.39,40.44
+SA,Policastro Bussentino,CM,5.0,15.31,40.4
+BO,Bologna,ER,48.0,11.19,44.30
+FC,Cesena,ER,42.0,12.14,44.8
+FE,Ferrara,ER,6.0,11.37,44.49
+MO,Modena,ER,37.0,10.55,44.39
+PC,Piacenza,ER,51.0,9.40,45.3
+PR,Parma,ER,57.0,10.19,44.48
+RA,Ravenna,ER,2.0,12.12,44.24
+RE,Reggio Emilia,ER,56.0,10.38,44.41
+RN,Rimini,ER,7.0,12.34,44.3
+GO,Gradisca d'Isonzo ,FV,30.0,13.30,45.53
+PN,Pordenone,FV,30.0,12.39,45.57
+TS,Trieste - Molo Bandiera,FV,2.0,13.45,45.38
+UD,Udine,FV,80.0,13.6,46.1
+FR,Frosinone,LZ,179.0,13.19,41.38
+LT,Latina,LZ,23.0,12.54,41.28
+RI,Piana di Rieti,LZ,378.0,12.48,42.25
+RM,Roma ,LZ,32.0,12.31,41.55
+VT,Montefiascone,LZ,327.0,12.0,42.28
+GE,Recco - Polanesi,LG,50.0,9.7,44.21
+IM,Sanremo,LG,61.0,7.47,43.49
+SP,Lerici - Monte Rocchetta,LG,360.0,9.56,44.4
+SV,Capo Vado Ligure,LG,170.0,8.26,44.15
+BG,Bergamo - via Goisis,LM,290.0,9.41,45.43
+BS,Bargnano,LM,93.0,10.2,45.26
+CO,Vertemate con Minoprio,LM,322.0,9.5,45.43
+CR,Capralba,LM,96.0,9.39,45.27
+LC,Valmadrera,LM,237.0,9.20,45.50
+LO,S.Angelo Lodigiano,LM,60.0,9.24,45.14
+MB,Cinisello Balsamo,LM,142.0,9.12,45.32
+MI,Milano - via Juvara,LM,122.0,9.13,45.28
+MN,Palidano di Gonzaga,LM,22.0,10.46,44.58
+PV,Castello di Agogna,LM,106.0,8.41,45.14
+SO,Sondrio,LM,307.0,9.52,46.10
+VA,Ispra,LM,193.0,8.36,45.48
+AN,Ancona - Regione,MH,91.0,13.31,43.37
+AP,Mozzano,MH,180.0,13.31,42.49
+FM,Porto Sant'Elpidio ,MH,5.0,13.45,43.15
+MC,Camerino,MH,581.0,13.4,43.8
+PU,Villa Fastiggi,MH,20.0,12.52,43.53
+CB,Jelsi,ML,581.0,14.46,41.31
+IS,Forli del Sannio,ML,660.0,14.12,41.42
+AL,Alessandria Lobbi,PM,90.0,8.42,44.56
+AT,Asti,PM,175.0,8.11,44.55
+BI,Massazza,PM,226.0,8.10,45.28
+CN,Boves,PM,575.0,7.33,44.20
+NO,Cameri,PM,173.0,8.41,45.32
+TO,Bauducchi,PM,226.0,7.42,44.57
+VB,Pallanza,PM,202.0,8.32,45.55
+VC,Vercelli,PM,132.0,8.23,45.19
+BA,Binetto,PU,189.0,16.44,40.59
+BR,Mesagne - Moccari,PU,53.0,17.51,40.33
+BT,Trani,PU,63.0,16.24,41.14
+FG,Castelluccio dei Sauri - Colazze-Giardinetto,PU,233.0,15.22,41.20
+LE,Otranto,PU,24.0,18.26,40.14
+TA,Taranto,PU,100.0,17.25,40.26
+CA,Decimomannu,SD,20.0,8.59,39.19
+CI,Iglesias,SD,208.0,8.31,39.17
+NU,Nuoro,SD,490.0,9.16,40.20
+OG,Jerzu,SD,46.0,9.36,39.47
+OR,Zeddiani - S. Lucia,SD,14.0,8.36,39.58
+OT,Luras,SD,488.0,9.9,40.55
+SS,Sassari,SD,150.0,8.32,40.44
+VS,Samassi,SD,100.0,8.55,39.31
+AG,Agrigento Mandrascava,SC,40.0,13.38,37.14
+CL,Gela,SC,70.0,14.20,37.9
+CT,Catania,SC,10.0,15.4,37.26
+EN,Enna,SC,350.0,14.10,37.31
+ME,Patti,SC,70.0,15.1,38.8
+PA,Palermo,SC,50.0,13.19,38.7
+RG,Ragusa - Cilone,SC,650.0,14.40,36.57
+SR,Siracusa,SC,90.0,15.9,37.3
+TP,Trapani Fulgatore,SC,180.0,12.39,37.56
+BZ,Bolzano,TT,265.0,11.20,46.29
+TN,Trento Sud,TT,185.0,11.7,46.1
+AR,Terranova Bracciolini - Casa Rota,TC,206.0,11.33,43.35
+FI,Firenze,TC,70.0,11.15,43.46
+GR,Rispescia,TC,40.0,11.8,42.42
+LI,Collesalvetti,TC,15.0,10.28,43.35
+LU,Lido di Camaiore,TC,5.0,10.14,43.53
+MS,Carrara,TC,90.0,10.4,44.3
+PI,San Giuliano Terme - Metato,TC,5.0,10.23,43.46
+PO,Artimino,TC,120.0,11.2,43.46
+PT,Pistoia - Santomato,TC,130.0,10.59,43.56
+SI,Buonconvento,TC,189.0,11.26,43.5
+PG,Foligno,UM,220.0,12.40,42.57
+TR,Piediluco,UM,370.0,12.46,42.32
+AO,Saint-Christophe,VD,545.0,7.21,45.44
+BL,Feltre,VN,267.0,11.53,46.0
+PD,Monselice - Ca' Oddo,VN,6.0,11.44,45.12
+RO,Concadirame,VN,6.0,11.43,45.5
+TV,Castelfranco Veneto,VN,50.0,11.56,45.41
+VE,Campagna Lupia - Valle Averto,VN,0.0,12.8,45.20
+VI,Breganze,VN,182.0,11.34,45.43
+VR,Buttapietra,VN,39.0,11.0,45.21
