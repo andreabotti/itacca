@@ -31,23 +31,6 @@ st.set_page_config(
 #
 #
 #
-st.markdown("""
-        <style>
-               .block-container {padding-top: 0rem; padding-bottom: 0rem; padding-left: 3rem; padding-right: 3rem;}
-        </style>
-        """, unsafe_allow_html=True)
-#
-# TOP CONTAINER
-with st.container():
-    st.markdown("# ITA.C.C.A")
-    st.markdown("#### Analisi di dati meteorologici ITAliani per facilitare l'Adattamento ai Cambiamenti Climatici")
-    st.caption('Developed by AB.S.RD - https://absrd.xyz/')
-    st.divider()
-#
-#
-#
-#
-#
 # STREAMLIT SESSION STATE - LOAD DATA
 df_SelectedLocations_CTI = st.session_state['df_SelectedLocations_CTI'] 
 df_SelectedLocations_COB = st.session_state['df_SelectedLocations_COB']
@@ -56,6 +39,36 @@ selected_region = st.session_state['selected_region']
 
 df_CTI_DBT = st.session_state['df_CTI_DBT']
 df_COB_DBT = st.session_state['df_COB_DBT']
+
+color_marker_CTI = st.session_state['color_marker_CTI']
+color_marker_COB = st.session_state['color_marker_COB']
+#
+#
+#
+#
+#
+st.markdown("""
+        <style>
+               .block-container {padding-top: 0.4rem; padding-bottom: 0rem; padding-left: 3rem; padding-right: 3rem;}
+        </style>
+        """, unsafe_allow_html=True)
+#
+# TOP CONTAINER
+top_col1, top_col2 = st.columns([6,1])
+with top_col1:
+    st.markdown("# ITA.C.C.A")
+    st.markdown("#### Analisi di dati meteorologici ITAliani per facilitare l'Adattamento ai Cambiamenti Climatici")
+    st.caption('Developed by AB.S.RD - https://absrd.xyz/')
+
+with top_col2:
+    try:
+        image_path = './img/{r}.svg'.format(r=selected_reg)
+        st.markdown('\n')
+        st.image(image_path, width=170)
+    except:
+        ''
+
+st.divider()
 #
 #
 #
@@ -250,6 +263,8 @@ df_COB_DBT_plot = df_COB_DBT_plot.filter(sel_cols_COB_line)
 
 # LINE CHART
 fig_line = generate_line_chart(
+    color_marker_A = color_marker_CTI,
+    color_marker_B = color_marker_COB,
     df_data_A = df_CTI_DBT_plot,
     df_data_B = df_COB_DBT_plot,
     color_pool_A = color_pool_CTI,
@@ -285,11 +300,14 @@ with tab1:
 
     with col2:
         st.divider()
-        st.markdown('##### Differenze di temperatura tra *{cti}* e *{cob}*'.format(cti=sel_location_CTI, cob=sel_location_COB))
-        st.caption('Rosso indica differenza positive di temperatura, ovvero **{cob}** piu\' caldo di **{cti}**. Blu indica l\'opposto.'.format(
-            cti=sel_location_CTI, cob=sel_location_COB
-            )
+        help_text = ':red[ROSSO] indica differenza positive di temperatura, ovvero _{cob} (COB)_ :red[più caldo] di _{cti} (CTI)_. \
+            :blue[BLU] indica _{cob} (COB)_ :blue[più fresco] di _{cti} (CTI)_.'.format(
+            cti=sel_location_CTI, cob=sel_location_COB, t=lower_threshold)
+        st.markdown('##### Differenze di temperatura tra *{cti}* e *{cob}*'.format(cti=sel_location_CTI, cob=sel_location_COB),
+                    help=help_text)
+        st.caption('I valori riportati sono calcolati per le temperature massime, ovvero quelle superiori a **{t} C** come definito dall\'utente nella sidebar.'.format(t=lower_threshold)
         )
+        # st.info('This is a purely informational message', icon="ℹ️")
         col21, spacing, col22 = st.columns([18,1,12])
         with col21:        
             st.plotly_chart(fig_weekly,use_container_width=True)
@@ -308,8 +326,8 @@ try:
             longitude_col=map_COB__sel_lon,
             location_col=map_COB__sel_location,
             chart_height=250,
-            marker_size=10,
-            marker_color='red',
+            marker_size=12,
+            marker_color=color_marker_COB,
             zoom01=10,
             zoom02=14,
             mapbox_access_token = mapbox_access_token,

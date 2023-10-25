@@ -177,7 +177,7 @@ def calculate_and_plot_differences(threshold, df_CTI, df_COB, chart_height):
 #
 #
 #
-def generate_line_chart(df_data_A, df_data_B, color_pool_A, color_pool_B, region, chart_height):
+def generate_line_chart(df_data_A, df_data_B, color_marker_A, color_marker_B, color_pool_A, color_pool_B, region, chart_height):
 
     fig_line = go.Figure()
 
@@ -185,6 +185,7 @@ def generate_line_chart(df_data_A, df_data_B, color_pool_A, color_pool_B, region
     for c in df_data_A.columns:
         i=i+1
         line_color = ['rgb'+str(tuple(col)) for col in color_pool_A][i]
+        line_color = color_marker_A
         fig_line.add_trace(
             go.Scatter(
                 x=df_data_A.index,
@@ -198,6 +199,7 @@ def generate_line_chart(df_data_A, df_data_B, color_pool_A, color_pool_B, region
     for c in df_data_B.columns:
         i=i+1
         line_color = ['rgb'+str(tuple(col)) for col in color_pool_B][i]
+        line_color = color_marker_B
         fig_line.add_trace(
             go.Scatter(
                 x=df_data_B.index,
