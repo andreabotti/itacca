@@ -2,7 +2,6 @@
 import os, sys
 import pandas as pd
 import csv
-from ladybug.epw import EPW
 
 
 
