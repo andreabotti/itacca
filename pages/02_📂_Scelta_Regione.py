@@ -1,33 +1,29 @@
 # IMPORT LIBRARIES
-import streamlit as st
-import re, os, sys, time, json, datetime
+import streamlit as st, pandas as pd, numpy as np
+import re, os, sys, time,  datetime, json, requests, urllib.request
 from datetime import datetime
-import requests, urllib.request, json
-import pandas as pd, numpy as np
-import pydeck # import pydeck instead of pdk
-
+from meteostat import Stations, Hourly
 from streamlit_plotly_events import plotly_events
+
+import pydeck # import pydeck instead of pdk
 import matplotlib.pyplot as plt, seaborn as sns, plotly.graph_objects as go, plotly.express as px, chart_studio
 from plotly.subplots import make_subplots
 chart_studio.tools.set_credentials_file(username='a.botti', api_key='aA5cNIJUz4yyMS9TLNhW');
-# px.set_mapbox_access_token('pk.eyJ1IjoiYW5kcmVhYm90dGkiLCJhIjoiY2xuNDdybms2MHBvMjJqbm95aDdlZ2owcyJ9.-fs8J1enU5kC3L4mAJ5ToQ')
 import leafmap.foliumap as leafmap
-
-from meteostat import Stations, Hourly
-from fn__epw_read import create_df_weather, epwab, strip_string_from_index, strip_string_from_columns
-# from color_pools_fn import create_color_pools
-##########
-
 mapbox_access_token = 'pk.eyJ1IjoiYW5kcmVhYm90dGkiLCJhIjoiY2xuNDdybms2MHBvMjJqbm95aDdlZ2owcyJ9.-fs8J1enU5kC3L4mAJ5ToQ'
 
-
+from fn__epw_read import create_df_weather, epwab, strip_string_from_index, strip_string_from_columns
+#
+#
+#
+#
+#
 # PAGE CONFIG
 st.set_page_config(
-   page_title="AB.S.RD Climate ToolSet",
-   page_icon="📈",
+   page_title="ITACCA Streamlit App",
+   page_icon="🌡️",
    layout="wide",
    )
-padding_top = 0
 #
 #
 #
@@ -40,14 +36,11 @@ st.markdown("""
         """, unsafe_allow_html=True)
 #
 # TOP CONTAINER
-top_col1, top_col2 = st.columns([3,1])
-
-with top_col1: 
-    with st.container():
-        st.markdown("# AB.S.RD Climate ToolSet")
-        st.markdown("### Analisi di Dati Climatici Presenti e Futuri")
-        st.caption('Developed by AB.S.RD - https://absrd.xyz/')
-        st.divider()
+with st.container():
+    st.markdown("# ITA.C.C.A")
+    st.markdown("#### Analisi di dati meteorologici ITAliani per facilitare l'Adattamento ai Cambiamenti Climatici")
+    st.caption('Developed by AB.S.RD - https://absrd.xyz/')
+    st.divider()
 #
 #
 #
@@ -71,13 +64,10 @@ regions_list = st.session_state['regions_list']
 #
 #
 # Region Selection
-col1, space1, col2, space2, col3 = st.columns([18,1,15,1,25])
+selected_region = st.sidebar.selectbox("Selezionare la regione:", regions_list)
 
-with top_col2:
-    selected_region = st.sidebar.selectbox("Selezionare la regione:", regions_list)
-
-    color_marker_CTI = st.sidebar.color_picker('Colore per marker CTI', '#71A871')
-    color_marker_COB = st.sidebar.color_picker('Colore per marker COB', '#E07E34')
+color_marker_CTI = st.sidebar.color_picker('Colore per marker CTI', '#71A871')
+color_marker_COB = st.sidebar.color_picker('Colore per marker COB', '#E07E34')
 
 # Filter CTI and COB stations based on selected region
 selected_reg = [i for i in dict_regions if dict_regions[i]==selected_region][0]
@@ -94,11 +84,13 @@ except:
 df_TablePlot_CTI = df_TablePlot_CTI[['province', 'city', 'lat', 'lon', 'alt']]
 df_TablePlot_COB.drop(['reg'], axis=1, inplace=True)
 n = df_TablePlot_CTI.shape[0]
-
-##########
-
-
-
+#
+#
+#
+#
+#
+# COLUMNS AND LAYOUT
+col1, space1, col2, space2, col3 = st.columns([18,1,15,1,25])
 
 with col1:
     # OPTION 2 : go.Scattermapbox

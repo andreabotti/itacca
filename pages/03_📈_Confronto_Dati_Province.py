@@ -1,30 +1,20 @@
 # IMPORT LIBRARIES
-import re, os, sys, time, json, datetime
+import streamlit as st, pandas as pd, numpy as np
+import re, os, sys, time,  datetime, json, requests, urllib.request
 from datetime import datetime
-import requests, urllib.request, json
-import pandas as pd, numpy as np
 from meteostat import Stations, Hourly
-
-import streamlit as st
-from streamlit_pills import pills
 from streamlit_plotly_events import plotly_events
-import leafmap.foliumap as leafmap
-import pydeck # import pydeck instead of pdk
 
+import pydeck # import pydeck instead of pdk
 import matplotlib.pyplot as plt, seaborn as sns, plotly.graph_objects as go, plotly.express as px, chart_studio
 from plotly.subplots import make_subplots
 chart_studio.tools.set_credentials_file(username='a.botti', api_key='aA5cNIJUz4yyMS9TLNhW');
+import leafmap.foliumap as leafmap
+mapbox_access_token = 'pk.eyJ1IjoiYW5kcmVhYm90dGkiLCJhIjoiY2xuNDdybms2MHBvMjJqbm95aDdlZ2owcyJ9.-fs8J1enU5kC3L4mAJ5ToQ'
 
 from fn__epw_read       import create_df_weather, epwab, strip_string_from_index, strip_string_from_columns
 from fn__color_pools    import create_color_pools
 from fn__create_charts  import calculate_and_plot_differences, generate_bar_bins_chart, generate_line_chart, generate_scatter_map_small
-
-mapbox_access_token = 'pk.eyJ1IjoiYW5kcmVhYm90dGkiLCJhIjoiY2xuNDdybms2MHBvMjJqbm95aDdlZ2owcyJ9.-fs8J1enU5kC3L4mAJ5ToQ'
-#
-#
-#
-#
-#
 #
 #
 #
@@ -32,11 +22,10 @@ mapbox_access_token = 'pk.eyJ1IjoiYW5kcmVhYm90dGkiLCJhIjoiY2xuNDdybms2MHBvMjJqbm
 #
 # PAGE CONFIG
 st.set_page_config(
-   page_title="AB.S.RD Climate ToolSet",
-   page_icon="📈",
+   page_title="ITACCA Streamlit App",
+   page_icon="🌡️",
    layout="wide",
    )
-# padding_top = 0
 #
 #
 #
@@ -44,22 +33,16 @@ st.set_page_config(
 #
 st.markdown("""
         <style>
-               .block-container {padding-top: 0rem; padding-bottom: 0rem; padding-left: 2rem; padding-right: 2rem;}
+               .block-container {padding-top: 0rem; padding-bottom: 0rem; padding-left: 3rem; padding-right: 3rem;}
         </style>
         """, unsafe_allow_html=True)
 #
-#
-#
-#
-#
-# TITLE BLOCK
-topcol01, topcol02 = st.columns([3,1])
-with topcol01:
-    with st.container():
-        st.markdown("# AB.S.RD Climate ToolSet")
-        st.markdown("### Analisi di Dati Climatici Presenti e Futuri")
-        st.caption('Developed by AB.S.RD - https://absrd.xyz/')
-st.divider()
+# TOP CONTAINER
+with st.container():
+    st.markdown("# ITA.C.C.A")
+    st.markdown("#### Analisi di dati meteorologici ITAliani per facilitare l'Adattamento ai Cambiamenti Climatici")
+    st.caption('Developed by AB.S.RD - https://absrd.xyz/')
+    st.divider()
 #
 #
 #
