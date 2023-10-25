@@ -107,11 +107,6 @@ jupyterlab-pygments==0.2.2
 jupyterlab-widgets==3.0.7
 jupyterlab_server==2.22.1
 kiwisolver==1.4.4
-ladybug==0.0.2
-ladybug-comfort==0.16.42
-ladybug-core==0.41.32
-ladybug-geometry==1.28.6
-ladybug-pandas==0.4.1
 leafmap==0.24.0
 locket==1.0.0
 lxml==4.9.2
