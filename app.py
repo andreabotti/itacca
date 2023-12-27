@@ -37,6 +37,7 @@ MAIN_PATH = FTP_PATH
 url__cti__dbt = MAIN_PATH + 'CTI__AllStations__DBT.csv'
 url__cob__dbt = MAIN_PATH + 'COB__SelWeatherStations__DBT.csv'
 
+
 url__cti__df_capoluoghi = MAIN_PATH + 'CTI__capoluoghi.csv'
 url__cti__df_capoluoghi = r'C:/_GitHub/andreabotti/itacca/data/' + 'CTI__capoluoghi.csv'
 
@@ -54,7 +55,7 @@ url__cti__geoson_provinces  = MAIN_PATH + 'limits_IT_provinces.geojson'
 # Load CTI and COB stations list
 url__CTI__stations  = MAIN_PATH + 'CTI__WeatherStations.csv'
 url__COB__stations  = MAIN_PATH + 'COB__SelWeatherStations.csv'
-url__COB_capo__stations  = LOCAL_PATH + 'COB__CapoWeatherStations.csv'
+url__COB_capo__stations  = MAIN_PATH + 'COB__CapoWeatherStations.csv'
 
 @st.cache_resource
 def LoadData__locations_CTI_COB():
