@@ -21,11 +21,19 @@ from fn__create_charts  import calculate_and_plot_differences, generate_bar_bins
 #
 #
 # PAGE CONFIG
-st.set_page_config(
-   page_title="ITACCA Streamlit App",
-   page_icon="🌡️",
-   layout="wide",
-   )
+st.set_page_config(page_title="ITACCA Streamlit App",   page_icon="🌡️", layout="wide")
+
+st.markdown(
+    """<style>.block-container {padding-top: 0rem; padding-bottom: 0rem; padding-left: 3rem; padding-right: 3rem;}</style>""",
+    unsafe_allow_html=True)
+#
+# TOP CONTAINER
+top_col1, top_col2 = st.columns([6,1])
+with top_col1:
+    st.markdown("# ITA.C.C.A")
+    st.markdown("#### Analisi di dati meteorologici ITAliani per facilitare l'Adattamento ai Cambiamenti Climatici")
+    st.caption('Developed by AB.S.RD - https://absrd.xyz/')
+#
 #
 #
 #
@@ -47,18 +55,6 @@ color_marker_COB = st.session_state['color_marker_COB']
 #
 #
 #
-st.markdown("""
-        <style>
-               .block-container {padding-top: 0.4rem; padding-bottom: 0rem; padding-left: 3rem; padding-right: 3rem;}
-        </style>
-        """, unsafe_allow_html=True)
-#
-# TOP CONTAINER
-top_col1, top_col2 = st.columns([6,1])
-with top_col1:
-    st.markdown("# ITA.C.C.A")
-    st.markdown("#### Analisi di dati meteorologici ITAliani per facilitare l'Adattamento ai Cambiamenti Climatici")
-    st.caption('Developed by AB.S.RD - https://absrd.xyz/')
 
 with top_col2:
     try:
@@ -98,10 +94,6 @@ df_CTI_DBT_plot.columns = df_CTI_DBT_plot.columns.str.replace('DBT\|','')
 df_CTI_DBT_plot = df_CTI_DBT_plot.convert_dtypes(convert_floating=True)
 df_COB_DBT_plot = df_COB_DBT_plot.convert_dtypes(convert_floating=True)
 #
-#
-#
-#
-#
 #  Set datetime index
 df_CTI_DBT_plot['datetime']=pd.to_datetime(df_CTI_DBT_plot.index)
 df_CTI_DBT_plot.set_index(['datetime'], inplace=True, drop=True)
@@ -121,8 +113,6 @@ end_slice   = '{y}-{m:02}-30'.format(y=year_plot, m=sel_month_COB[1])
 
 df_CTI_DBT_plot = df_CTI_DBT_plot[start_slice:end_slice]
 df_COB_DBT_plot = df_COB_DBT_plot[start_slice:end_slice]
-# st.write(df_CTI_DBT_plot.shape)
-# st.write(df_COB_DBT_plot.shape)
 #
 #
 #
@@ -269,7 +259,7 @@ fig_line = generate_line_chart(
     df_data_B = df_COB_DBT_plot,
     color_pool_A = color_pool_CTI,
     color_pool_B = color_pool_COB,
-    region = selected_region,
+    title_text='Temperature a Bulbo Secco - Stazioni in {r}'.format(r=selected_region),
     chart_height = 520,
     )
 with tab1:
@@ -340,26 +330,6 @@ try:
             st.plotly_chart(fig_small_02, use_container_width=True)
 except:
     ''
-
-
-
-
-
-
-
-# with tab2:
-#     col41,col42, col43 = st.columns([2,2,4])
-#     with col41:
-#         sel_year_meteostat = st.slider(
-#             'Scgliere Anno',    min_value=2000, max_value=2023,     value=2022)
-#     with col42:
-#         sel_month_meteostat = st.select_slider(
-#             'Scegliere Mese',   options=np.arange(1,13,1),  value=(6, 7),)
-
-
-
-
-
 
 
 

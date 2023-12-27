@@ -1,127 +1,124 @@
-import streamlit as st
-import os, sys, time, json, datetime
-from datetime import datetime
-import requests, urllib.request, json
-import pandas as pd, numpy as np, pydeck as pdk
-
-from streamlit_plotly_events import plotly_events
-import matplotlib.pyplot as plt, seaborn as sns, plotly.graph_objects as go, plotly.express as px, chart_studio
-from plotly.subplots import make_subplots
-chart_studio.tools.set_credentials_file(username='a.botti', api_key='aA5cNIJUz4yyMS9TLNhW');
-
-from meteostat import Stations, Hourly
-from fn__epw_read import create_df_weather, epwab, strip_string_from_index, strip_string_from_columns
-##########
-
-
-
-
-LOCAL_PATH  = r'C:/_OneDrive/OPEN PROJECT SRL/Sostenibilita - Documents/01__Ricerca/10__LCA_Carbon/17__LCA_Coding/01__ITACCA/data/'
-FTP_PATH    = r'https://absrd.xyz/streamlit_apps/_weather_data/'
-MAIN_PATH = FTP_PATH
-
-
-
+# IMPORT LIBRARIES
+from imports import *
+mapbox_access_token = 'pk.eyJ1IjoiYW5kcmVhYm90dGkiLCJhIjoiY2xuNDdybms2MHBvMjJqbm95aDdlZ2owcyJ9.-fs8J1enU5kC3L4mAJ5ToQ'
+#
+#
+#
+#
+#
 # PAGE CONFIG
-st.set_page_config(
-   page_title="ITACCA Streamlit App",
-   page_icon="🌡️",
-   layout="wide",
-   )
-#
-#
-#
-#
-#
-st.markdown("""
-        <style>
-               .block-container {padding-top: 0rem; padding-bottom: 0rem; padding-left: 3rem; padding-right: 3rem;}
-        </style>
-        """, unsafe_allow_html=True)
-#
+st.set_page_config(page_title="ITACCA Streamlit App",   page_icon="🌡️", layout="wide")
+
+st.markdown(
+    """<style>.block-container {padding-top: 0rem; padding-bottom: 0rem; padding-left: 3rem; padding-right: 3rem;}</style>""",
+    unsafe_allow_html=True)
+
 # TOP CONTAINER
-with st.container():
+top_col1, top_col2 = st.columns([6,1])
+with top_col1:
     st.markdown("# ITA.C.C.A")
     st.markdown("#### Analisi di dati meteorologici ITAliani per facilitare l'Adattamento ai Cambiamenti Climatici")
     st.caption('Developed by AB.S.RD - https://absrd.xyz/')
-    st.divider()
+#
+#
+#
+#
+#
+# LOCAL_PATH  = r'C:/_OneDrive/OPEN PROJECT SRL/Sostenibilita - Documents/01__Ricerca/10__LCA_Carbon/17__LCA_Coding/01__ITACCA/data/'
+LOCAL_PATH  = r'C:/_GitHub/andreabotti/itacca/data/'
+FTP_PATH    = r'https://absrd.xyz/streamlit_apps/_weather_data/'
+MAIN_PATH = FTP_PATH
 #
 #
 #
 #
 #
 # Load Data
-url__CTI__stations  = MAIN_PATH + 'CTI__WeatherStations.csv'
-url__COB__stations  = MAIN_PATH + 'COB__SelWeatherStations.csv'
 url__cti__dbt = MAIN_PATH + 'CTI__AllStations__DBT.csv'
 url__cob__dbt = MAIN_PATH + 'COB__SelWeatherStations__DBT.csv'
 
-url__cti_try__dict_regionss      = MAIN_PATH + 'CTI__dict__Regions.json'
-url__cti_try__geoson_regions    = MAIN_PATH + 'limits_IT_regions.geojson'
-url__cti_try__geoson_provinces  = MAIN_PATH + 'limits_IT_provinces.geojson'
+url__cti__df_capoluoghi = MAIN_PATH + 'CTI__capoluoghi.csv'
+url__cti__df_capoluoghi = r'C:/_GitHub/andreabotti/itacca/data/' + 'CTI__capoluoghi.csv'
+
+url__cti__dbt__capoluoghi = r'C:/_GitHub/andreabotti/itacca/data/' + 'COB__SelWeatherStations__Capoluoghi__DBT.csv'
+
+
+url__cti__dict_regions      = MAIN_PATH + 'CTI__dict__Regions.json'
+url__cti__geoson_regions    = MAIN_PATH + 'limits_IT_regions.geojson'
+url__cti__geoson_provinces  = MAIN_PATH + 'limits_IT_provinces.geojson'
 #
 #
 #
 #
 #
-# Load CTI stations list
+# Load CTI and COB stations list
+url__CTI__stations  = MAIN_PATH + 'CTI__WeatherStations.csv'
+url__COB__stations  = MAIN_PATH + 'COB__SelWeatherStations.csv'
+url__COB_capo__stations  = LOCAL_PATH + 'COB__CapoWeatherStations.csv'
+
 @st.cache_resource
-def load_data__locations_CTI():
-    df = pd.read_csv(url__CTI__stations)
+def LoadData__locations_CTI_COB():
+    df_CTI = pd.read_csv(url__CTI__stations)
+    df_COB = pd.read_csv(url__COB__stations)
+    df_COB_capo = pd.read_csv(url__COB_capo__stations)
+    return df_CTI, df_COB, df_COB_capo
+
+df_locations_CTI,df_locations_COB, df_locations_COB_capo = LoadData__locations_CTI_COB()
+
+
+
+# Load Capoluoghi dataframe
+@st.cache_resource
+def LoadData__capoluoghi():
+    df = pd.read_csv(url__cti__df_capoluoghi, index_col=False, keep_default_na=False)
+    return df
+df_capoluoghi = LoadData__capoluoghi()
+
+
+
+# Load DBT for CTI and COB datasets
+@st.cache_resource
+def LoadData__DBT__CTI_COB__all():
+    df_CTI = pd.read_csv(url__cti__dbt,index_col='datetime')
+    df_COB = pd.read_csv(url__cob__dbt)
+    return df_CTI, df_COB
+
+df_CTI_DBT, df_COB_DBT = LoadData__DBT__CTI_COB__all()
+
+
+
+# Load DBT for Capoluoghi selected COB datasets
+@st.cache_resource
+def LoadData__DBT__COB__capoluoghi():
+    df = pd.read_csv(url__cti__dbt__capoluoghi)
     return df
 
-# Load COB stations list
-@st.cache_resource
-def load_data__locations_COB():
-    df = pd.read_csv(url__COB__stations)
-    return df
+df__COB_capo__DBT = LoadData__DBT__COB__capoluoghi()
 
-# Load CTI italian regions - short and long names
-@st.cache_resource
-def load_data_dict_regionss():
-    json_file = json.loads(requests.get(url__cti_try__dict_regionss).text)
-    cti_try__dict_regionss = json_file
-    return cti_try__dict_regionss
 
-# Load DBT for CTI dataset
-@st.cache_resource
-def load_data__CTI_DBT():
-    df = pd.read_csv(url__cti__dbt,index_col='datetime')
-    return df
-
-# Load DBT for CTI dataset
-@st.cache_resource
-def load_data__COB_DBT():
-    df = pd.read_csv(url__cob__dbt)
-    return df
 
 # Load TopoJSON
 @st.cache_resource
-def load_data_regions():
-    json_file = json.loads(requests.get(url__cti_try__geoson_regions).text)
+def LoadData_regions_provinces():
+    json_file = json.loads(requests.get(url__cti__geoson_regions).text)
     geojson_italy_regions = json_file
-    return geojson_italy_regions
 
-@st.cache_resource
-def load_data_provinces():
-    json_file = json.loads(requests.get(url__cti_try__geoson_provinces).text)
+    json_file = json.loads(requests.get(url__cti__geoson_provinces).text)
     geojson_italy_provinces = json_file
-    return geojson_italy_provinces
+    return geojson_italy_regions, geojson_italy_provinces
 
-# LOAD DATA
-df_locations_CTI   = load_data__locations_CTI()
-df_locations_COB   = load_data__locations_COB()
-df_CTI_DBT = load_data__CTI_DBT()
-df_COB_DBT = load_data__COB_DBT()
-geojson_italy_regions = load_data_regions()
-geojson_italy_provinces = load_data_provinces()
+geojson_italy_regions, geojson_italy_provinces = LoadData_regions_provinces()
 #
 #
 #
+#
+#
+
+
 #
 #
 # DICT REGIONS
-cti_try__dict_regionss = {
+cti__dict_regions = {
     "AB":"Abruzzo",         "BC":"Basilicata",          "CM":"Campania",
     "CL":"Calabria",        "ER":"Emilia Romagna",      "FV":"Friuli Venezia Giulia",
     "LZ":"Lazio",           "LG":"Liguria",             "LM":"Lombardia",
@@ -130,9 +127,11 @@ cti_try__dict_regionss = {
     "TC":"Toscana",         "TT":"Trentino Alto Adige", "UM":"Umbria",
     "VD":"Valle dAosta",    "VN":"Veneto"
     }
-dict_regions = pd.read_json( url__cti_try__dict_regionss, typ='series')
+dict_regions = pd.read_json( url__cti__dict_regions, typ='series')
 dict_regions = dict(dict_regions)
 regions_list = list(dict_regions.values())
+
+
 #
 #
 #
@@ -145,6 +144,9 @@ df_locations_CTI = df_locations_CTI[sel_cols]
 
 df_locations_COB['wmo_code'] = df_locations_COB['wmo_code'].astype(str) 
 df_locations_COB = df_locations_COB[ ['reg', 'location', 'filename', 'wmo_code', 'lat', 'lon','alt'] ]
+df_locations_COB_capo['wmo_code'] = df_locations_COB_capo['wmo_code'].astype(str) 
+df_locations_COB_capo = df_locations_COB_capo[ ['reg', 'location', 'filename', 'wmo_code', 'lat', 'lon','alt'] ]
+
 
 # DATAFRAME PROVINCES
 df_province = df_locations_CTI.groupby('province').size()
@@ -165,9 +167,11 @@ df_reg_short = df_reg_short[['region', 'station_count']]
 # SAVE ST SESSION STATES
 st.session_state['df_locations_CTI'] = df_locations_CTI
 st.session_state['df_locations_COB'] = df_locations_COB
+st.session_state['df_locations_COB_capo'] = df_locations_COB_capo
 
 st.session_state['df_CTI_DBT'] = df_CTI_DBT
 st.session_state['df_COB_DBT'] = df_COB_DBT
+st.session_state['df__COB_capo__DBT'] = df__COB_capo__DBT
 
 st.session_state['df_reg'] = df_reg_short
 st.session_state['geojson_italy_regions'] = geojson_italy_regions
@@ -175,6 +179,8 @@ st.session_state['geojson_italy_provinces'] = geojson_italy_provinces
 
 st.session_state['dict_regions'] = dict_regions
 st.session_state['regions_list'] = regions_list
+
+st.session_state['df_capoluoghi'] = df_capoluoghi
 #
 #
 #

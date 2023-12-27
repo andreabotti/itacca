@@ -1,29 +1,24 @@
 # IMPORT LIBRARIES
-import streamlit as st, pandas as pd, numpy as np
-import re, os, sys, time,  datetime, json, requests, urllib.request
-from datetime import datetime
-from meteostat import Stations, Hourly
-from streamlit_plotly_events import plotly_events
-
-import pydeck # import pydeck instead of pdk
-import matplotlib.pyplot as plt, seaborn as sns, plotly.graph_objects as go, plotly.express as px, chart_studio
-from plotly.subplots import make_subplots
-chart_studio.tools.set_credentials_file(username='a.botti', api_key='aA5cNIJUz4yyMS9TLNhW');
-import leafmap.foliumap as leafmap
+from imports import *
 mapbox_access_token = 'pk.eyJ1IjoiYW5kcmVhYm90dGkiLCJhIjoiY2xuNDdybms2MHBvMjJqbm95aDdlZ2owcyJ9.-fs8J1enU5kC3L4mAJ5ToQ'
-
-from fn__epw_read import create_df_weather, epwab, strip_string_from_index, strip_string_from_columns
 #
 #
 #
 #
 #
 # PAGE CONFIG
-st.set_page_config(
-   page_title="ITACCA Streamlit App",
-   page_icon="🌡️",
-   layout="wide",
-   )
+st.set_page_config(page_title="ITACCA Streamlit App",   page_icon="🌡️", layout="wide")
+
+st.markdown(
+    """<style>.block-container {padding-top: 0rem; padding-bottom: 0rem; padding-left: 3rem; padding-right: 3rem;}</style>""",
+    unsafe_allow_html=True)
+
+# TOP CONTAINER
+top_col1, top_col2 = st.columns([6,1])
+with top_col1:
+    st.markdown("# ITA.C.C.A")
+    st.markdown("#### Analisi di dati meteorologici ITAliani per facilitare l'Adattamento ai Cambiamenti Climatici")
+    st.caption('Developed by AB.S.RD - https://absrd.xyz/')
 #
 #
 #
@@ -69,27 +64,12 @@ n = df_TablePlot_CTI.shape[0]
 #
 #
 #
-st.markdown("""
-        <style>
-               .block-container {padding-top: 0.4rem; padding-bottom: 0rem; padding-left: 3rem; padding-right: 3rem;}
-        </style>
-        """, unsafe_allow_html=True)
-#
-# TOP CONTAINER
-top_col1, top_col2 = st.columns([6,1])
-with top_col1:
-    st.markdown("# ITA.C.C.A")
-    st.markdown("#### Analisi di dati meteorologici ITAliani per facilitare l'Adattamento ai Cambiamenti Climatici")
-    st.caption('Developed by AB.S.RD - https://absrd.xyz/')
-
+image_path = './img/{r}.svg'.format(r=selected_reg)
 with top_col2:
-    image_path = './img/{r}.svg'.format(r=selected_reg)
     st.markdown('\n')
     st.image(image_path, width=170)
 
-
-image_path = './img/{r}.svg'.format(r=selected_reg)
-st.markdown('\n')
+st.sidebar.markdown('\n')
 st.sidebar.image(image_path, width=220)
 
 st.divider()
@@ -102,13 +82,9 @@ st.divider()
 col1, space1, col2, space2, col3 = st.columns([18,1,15,1,25])
 
 with col1:
-    # OPTION 2 : go.Scattermapbox
-
     # Calculate the centroid of the provided data points
     center_latitude = sum(df_SelectedLocations_CTI.lat) / len(df_SelectedLocations_CTI.lat)
     center_longitude = sum(df_SelectedLocations_CTI.lon) / len(df_SelectedLocations_CTI.lon)
-
-    # print(df_SelectedLocations_COB)
 
     fig2 = go.Figure()
     fig2.add_traces(

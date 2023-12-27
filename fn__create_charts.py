@@ -1,9 +1,15 @@
-import colorsys, random
-import math
+import streamlit as st
+
+import pandas as pd, numpy as np, re
+import colorsys, random, math
+from datetime import datetime
+from meteostat import Point, Daily, Hourly
+
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import pandas as pd
-import streamlit as st
+import plotly.express as px
+import altair as alt
+
 
 
 
@@ -15,18 +21,15 @@ def round_to_decade(custom_series):
     # Round values to nearest decade
     rounded_max = math.ceil(max_value/10.0) * 10
     rounded_min = math.ceil(min_value/10.0) * 10
-
-    
-    print(f"Original Max: {max_value}, Rounded Max: {rounded_max}")
-    print(f"Original Min: {min_value}, Rounded Min: {rounded_min}")
+    # print(f"Original Max: {max_value}, Rounded Max: {rounded_max}")
+    # print(f"Original Min: {min_value}, Rounded Min: {rounded_min}")
     
     return rounded_max
-
-
-
-
-
-
+#
+#
+#
+#
+#
 def generate_bar_bins_chart(bins, df, color_palette, chart_height):
 
     data = []
@@ -80,30 +83,31 @@ def generate_bar_bins_chart(bins, df, color_palette, chart_height):
     fig = go.Figure(data=data, layout=layout)
     
     return fig
-
-
-
-
-def calculate_and_plot_differences(threshold, df_CTI, df_COB, chart_height):
+#
+#
+#
+#
+#
+def calculate_and_plot_differences(threshold, df1, df2, color_cooler, color_warmer, chart_height):
     # Slice both dataframes to their first column
     try:
-        df_CTI_sliced = df_CTI.iloc[:, 0]
-        df_COB_sliced = df_COB.iloc[:, 0]
+        df1_sliced = df1.iloc[:, 0]
+        df2_sliced = df2.iloc[:, 0]
     except:
-        df_CTI_sliced = df_CTI
-        df_COB_sliced = df_COB
+        df1_sliced = df1
+        df2_sliced = df2
 
     # Apply the lower threshold to the sliced dataframes
-    df_CTI_filtered = df_CTI_sliced[df_CTI_sliced >= threshold]
-    df_COB_filtered = df_COB_sliced[df_COB_sliced >= threshold]
+    df1_filtered = df1_sliced[df1_sliced >= threshold]
+    df2_filtered = df2_sliced[df2_sliced >= threshold]
 
     # Apply the lower threshold to the sliced dataframes and replace null values with 0
-    df_CTI_filtered = df_CTI_sliced.where(df_CTI_filtered >= threshold, 0)
-    df_COB_filtered = df_COB_sliced.where(df_COB_sliced >= threshold, 0)
+    df1_filtered = df1_sliced.where(df1_filtered >= threshold, 0)
+    df2_filtered = df2_sliced.where(df2_sliced >= threshold, 0)
 
 
     # Calculate differences
-    df_diff = df_COB_filtered - df_CTI_filtered
+    df_diff = df2_filtered - df1_filtered
     df_diff = df_diff[df_diff >= -10]
     df_diff = df_diff[df_diff <= 10]
 
@@ -120,6 +124,11 @@ def calculate_and_plot_differences(threshold, df_CTI, df_COB, chart_height):
     # Create a function to determine bar color based on positive or negative values
     def get_bar_color(value):
         return 'lightblue' if value < 0 else 'lightcoral'
+
+    # Create a function - similar to that above - that instead applies Color2 (for df2) for positive values and Color1 (for df1) for negative values.
+    # This assumes that df2 almost always represents warmer data (COB, MSTAT) than df1 (CTI)
+    def get_bar_color(value):
+        return color_cooler if value < 0 else color_warmer
 
     # Create subplots for weekly differences
     fig_weekly = make_subplots(rows=1, cols=1, subplot_titles=["Differenze Settimanali"])
@@ -138,11 +147,10 @@ def calculate_and_plot_differences(threshold, df_CTI, df_COB, chart_height):
         xaxis_title="SETTIMANE",
         yaxis_title="Piu fresco | Piu caldo",
         yaxis_range=[-rounded_max,rounded_max],
-        yaxis=dict(ticksuffix=' C'),
+        yaxis=dict(ticksuffix=' DH'),
         height=chart_height,
-        margin=dict(l=0,r=0,t=20,b=0),
+        margin=dict(l=0,r=0,t=40,b=0),
     )
-
 
     # Create subplots for monthly differences
     fig_monthly = make_subplots(rows=1, cols=1, subplot_titles=["Differenze Mensili"])
@@ -159,14 +167,14 @@ def calculate_and_plot_differences(threshold, df_CTI, df_COB, chart_height):
         showlegend=False,
         xaxis_title="MESI",
         yaxis_title="Piu fresco | Piu caldo",
-        yaxis_range=[-rounded_max,rounded_max],
-        yaxis=dict(ticksuffix=' C'),
+        yaxis_range=[-rounded_max*1.10,rounded_max*1.10],
+        yaxis=dict(ticksuffix=' DH'),
         height=chart_height,
-        margin=dict(l=0,r=0,t=20,b=0),
+        margin=dict(l=0,r=0,t=40,b=0),
     )
 
     # Return the weekly and monthly plots
-    return df_CTI_filtered, df_COB_filtered, df_diff, fig_weekly, fig_monthly
+    return df1_filtered, df2_filtered, df_diff, fig_weekly, fig_monthly
 #
 #
 #
@@ -177,7 +185,10 @@ def calculate_and_plot_differences(threshold, df_CTI, df_COB, chart_height):
 #
 #
 #
-def generate_line_chart(df_data_A, df_data_B, color_marker_A, color_marker_B, color_pool_A, color_pool_B, region, chart_height):
+def generate_line_chart(
+        df_data_A, df_data_B, color_marker_A, color_marker_B, color_pool_A, color_pool_B,
+        chart_height, title_text,
+        ):
 
     fig_line = go.Figure()
 
@@ -220,12 +231,12 @@ def generate_line_chart(df_data_A, df_data_B, color_marker_A, color_marker_B, co
         # 
         height=chart_height,
         # width=1500,
-        margin=dict(l=0,r=0,t=70,b=0),
+        margin=dict(l=0,r=0,t=40,b=0),
         # 
         template="plotly_white",
         font=dict(family="Swis721 BT", size=14),
         title=dict(
-            text='Temperature a Bulbo Secco - Stazioni in {r}'.format(r=region),
+            text=title_text,
             font=dict(size=20), x=0.5, y=1, xanchor='center', yanchor='top'),
         )
 
@@ -254,7 +265,6 @@ def generate_line_chart(df_data_A, df_data_B, color_marker_A, color_marker_B, co
 #
 #
 #
-
 def generate_scatter_map_small(
         latitude_col, longitude_col, location_col, chart_height, marker_size, marker_color, zoom01, zoom02,mapbox_access_token):
     fig_small_01 = go.Figure()
@@ -285,5 +295,279 @@ def generate_scatter_map_small(
     )
 
     return fig_small_01, fig_small_02
+#
+#
+#
+#
+#
+
+def fetch_daily_data(latitude, longitude, start_date, end_date):
+    # Create a Point for the location
+    location = Point(latitude, longitude)
+
+    # Fetch daily data
+    data = Daily(location, start_date, end_date)
+    daily_data = data.fetch()
+
+    return daily_data
+#
+def fetch_hourly_data(latitude, longitude, start_date, end_date):
+    # Create a Point for the location
+    location = Point(latitude, longitude)
+
+    # Fetch hourly data
+    data = Hourly(location, start_date, end_date)
+    hourly_data = data.fetch()
+
+    return hourly_data
 
 
+
+
+# Function to bin temperature data and calculate percentages
+def bin_and_calculate_percentages(temperature_data, temperature_col, intervals, period):
+    """
+    Bin temperature data into specified intervals and calculate the percentages.
+    :param temperature_data: DataFrame with 'date' and 'temperature'.
+    :param intervals: List of temperature intervals for binning.
+    :param period: Period for aggregation ('M' for monthly, 'W' for weekly).
+    :return: DataFrame with percentage data.
+    """
+    # Bin the temperature data
+    temperature_data['temp_bin'] = pd.cut(temperature_data[temperature_col], bins=intervals, include_lowest=True, right=True)
+    # Group by period and bin, then count occurrences
+    binned_data = temperature_data.groupby([pd.Grouper(key='date', freq=period), 'temp_bin']).size().reset_index(name='count')
+
+    # Calculate total counts per period for normalization
+    total_counts = binned_data.groupby('date')['count'].transform('sum')
+
+    # Calculate percentage
+    binned_data['percentage'] = (binned_data['count'] / total_counts) * 100
+    binned_data['temp_bin'] = binned_data['temp_bin'].astype(str)  # Convert bin to string for plotting
+
+    return binned_data
+
+
+
+
+
+
+
+def create_plotly_go_chart(data, bins, colors):
+
+    # Map bins to colors
+    color_mapping = {bin_label: color for bin_label, color in zip(bins, colors)}
+    data['color'] = data['temp_bin'].map(color_mapping)
+
+    fig = go.Figure(data=[
+        go.Bar(
+            x=data['date'],
+            y=data['percentage'],
+            marker=dict(color=data['temp_bin'])  # Customize bar colors
+        )
+    ])
+    
+    # Customize the layout
+    fig.update_layout(
+        title='Temperature Distribution',
+        title_font_size=20,
+        title_x=0.5,  # Center title
+        xaxis_title='Date',
+        yaxis_title='% of Time',
+        barmode='group',
+        font=dict(family="Arial, sans-serif", size=12, color="RebeccaPurple"),
+        margin=dict(l=40, r=40, t=40, b=40),  # Margins (left, right, top, bottom)
+        plot_bgcolor='ivory',  # Background color for the plot
+        paper_bgcolor='mintcream',  # Background color for the paper
+    )
+
+    # Customize axes
+    fig.update_xaxes(title_font=dict(size=18, family='Courier', color='crimson'),
+                     tickfont=dict(size=14, family='Helvetica', color='blue'),
+                     tickangle=45)
+    fig.update_yaxes(title_font=dict(size=18, family='Courier', color='crimson'),
+                     tickfont=dict(size=14, family='Helvetica', color='blue'))
+
+    # Customize legend
+    fig.update_layout(legend=dict(
+        x=0,
+        y=1,
+        traceorder="normal",
+        font=dict(family="sans-serif", size=12, color="black"),
+        bgcolor="LightSteelBlue",
+        bordercolor="Black",
+        borderwidth=2
+    ))
+
+    return fig
+
+
+
+
+# Function to extract, round numbers, and keep original brackets
+def format_range(s):
+    # Extract brackets and numbers
+    brackets = re.findall(r'[()\[\]]', s)
+    numbers = re.findall(r"[-+]?\d*\.\d+|\d+", s)
+    
+    # Round the numbers and reassemble the string with original brackets
+    rounded_numbers = [round(float(num)) for num in numbers]
+    return f"{brackets[0]}{rounded_numbers[0]}, {rounded_numbers[1]}{brackets[1]}" if len(rounded_numbers) == 2 else None
+
+
+
+
+def create_plotly_express_chart(data, bins, colors, bar_gap,chart_height):
+
+    # Get unique bin intervals from the DataFrame
+    unique_bins = data['temp_bin'].unique()
+
+    # Map unique bin intervals to colors
+    color_mapping = {bin_label: color for bin_label, color in zip(unique_bins, colors)}
+    
+    # Apply color mapping to the DataFrame
+    data['color'] = data['temp_bin'].map(color_mapping)
+    color_dict = {color: color for color in colors}
+
+    # Apply the function to create a new column
+    data['temp_bin'] = data['temp_bin'].apply(format_range)
+
+
+    # Create the figure with Plotly Express
+    fig = px.bar(
+        data,
+        x='date',
+        y='percentage',
+        color='color',
+        color_discrete_map=color_dict,
+        hover_data={'color': False, 'percentage': ':.1%', 'temp_bin': True},  # Custom hover data
+        title=' ',
+    )
+    # Update hover template to include bin string and formatted percentage
+    fig.update_traces(
+        hovertemplate="<br>".join([
+            "%{x}",
+            "%{y:.1f}%",
+            "%{customdata[1]}"
+        ])
+    )
+
+    # Update layout
+    fig.update_layout(
+        title_font_size=12,
+        title_x=0.5,  # Center title
+        # xaxis_title='Date',
+        # yaxis_title='% of Time',
+        # font=dict(family="Roboto, sans-serif", size=11),
+        margin=dict(l=20, r=20, t=20, b=0),
+        showlegend=False,
+    )
+
+    # Update layout to reduce gap between bars
+    fig.update_layout(bargap=bar_gap)  # Adjust this value as needed
+    
+    # Hide the axis titles
+    fig.update_xaxes(title='')
+    fig.update_yaxes(title='')
+
+    fig.update_layout(
+        showlegend=False,
+        yaxis=dict(ticksuffix=' %'),
+        height=chart_height,
+        margin=dict(l=0,r=0,t=10,b=0),
+    )
+
+    # Customize legend
+    # fig.update_layout(
+    #     legend=dict(
+    #         x=0,
+    #         y=1,
+    #         traceorder="normal",
+    #         font=dict(family="sans-serif", size=12, color="black"),
+    #         bgcolor="LightSteelBlue",
+    #         bordercolor="Black",
+    #         borderwidth=2,
+    #     )
+    # )
+
+    return fig
+
+
+
+
+
+
+
+
+
+
+
+
+def generate_temperature_bins_chart(bins, df, color_palette, chart_height, freq):
+    """
+    Generate a bar bins chart for a temperature timeseries, with separate sets of binned data for each period.
+
+    Args:
+    bins (list): A list of numeric values defining the edges of bins.
+    df (pd.DataFrame): A pandas DataFrame containing the timeseries data.
+    color_palette (list): A list of colors for the bars in the chart.
+    chart_height (int): The height of the chart.
+    freq (str): Frequency for grouping data ('W' for weekly, 'M' for monthly, etc.).
+    """
+
+    # Ensure the DataFrame has a datetime index
+    if not isinstance(df.index, pd.DatetimeIndex):
+        raise ValueError("DataFrame index must be a datetime index.")
+
+    # Grouping the data by the specified frequency
+    grouped_df = df.groupby(pd.Grouper(freq=freq))
+
+    
+    data = []
+    for name, group in grouped_df:
+        if group.empty:  # Skip empty groups
+            continue
+
+        for col in group.columns:
+            binned_counts = [0 for _ in range(len(bins)-1)]
+            
+            for temp in group[col]:
+                try:
+                    temp = float(temp)
+                except:
+                    continue  # Skip non-numeric values
+                for i in range(len(bins)-1):
+                    if bins[i] <= temp < bins[i+1]:
+                        binned_counts[i] += 1
+
+            total_values = len(group[col])
+            if total_values == 0:  # Avoid division by zero
+                continue
+            binned_percentages = [(count / total_values) * 100 for count in binned_counts]
+
+            for i, (percentage, count) in enumerate(zip(binned_percentages, binned_counts)):
+                bin_label = f"{bins[i]}-{bins[i+1]} ({name.strftime('%b %Y')})"
+                data.append(
+                    go.Bar(
+                        name=bin_label, x=[col], y=[percentage], text=[count], 
+                        textposition='auto', hoverinfo="name+x+text", orientation='h',
+                        marker_color=color_palette[i % len(color_palette)],
+                        showlegend=True,
+                    )
+                )
+
+    layout = go.Layout(
+        barmode='stack',
+        yaxis=dict(range=[0, 101], dtick=20, showticklabels=True, ticksuffix='%'),
+        xaxis=dict(tickfont=dict(family="Swis721 BT", size=10)),
+        height=chart_height,
+        font=dict(family="Swis721 BT", size=12),
+        margin=dict(l=0, r=0, t=20, b=0),
+        showlegend=True,
+        legend=dict(font=dict(family="Swis721 BT", size=10)),
+        title=dict(text='Temperature - intervalli %', font=dict(size=13), x=0.5, y=1, xanchor='center', yanchor='top'),
+    )
+
+    fig = go.Figure(data=data, layout=layout)
+    
+    return fig

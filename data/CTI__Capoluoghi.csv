@@ -1,0 +1,21 @@
+reg,region_full,province,city
+AB,Abruzzo,AQ,L'Aquila,
+BC,Basilicata,PZ,Potenza
+CL,Calabria,CZ,Catanzaro
+CM,Campania,NA,Napoli
+ER,Emilia Romagna,BO,Bologna
+FV,Friuli Venezia Giulia,TS,Trieste
+LZ,Lazio,RM,Roma
+LG,Liguria,GE,Genova
+LM,Lombardia,MI,Milano
+MH,Marche,AN,Ancona
+ML,Molise,CB,Campobasso
+PM,Piemonte,TO,Torino
+PU,Puglia,BA,Bari
+SD,Sardegna,CA,Cagliari
+SC,Sicilia,PA,Palermo
+TC,Toscana,FI,Firenze
+TT,Trentino Alto Adige,TN,Trento
+UM,Umbria,PG,Perugia
+VD,Valle d'Aosta,AO,Aosta
+VN,Veneto,VE,Venezia
