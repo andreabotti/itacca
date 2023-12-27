@@ -37,26 +37,21 @@ MAIN_PATH = FTP_PATH
 url__cti__dbt = MAIN_PATH + 'CTI__AllStations__DBT.csv'
 url__cob__dbt = MAIN_PATH + 'COB__SelWeatherStations__DBT.csv'
 
-
 url__cti__df_capoluoghi = MAIN_PATH + 'CTI__capoluoghi.csv'
-url__cti__df_capoluoghi = r'C:/_GitHub/andreabotti/itacca/data/' + 'CTI__capoluoghi.csv'
-
-url__cti__dbt__capoluoghi = r'C:/_GitHub/andreabotti/itacca/data/' + 'COB__SelWeatherStations__Capoluoghi__DBT.csv'
-
+url__cti__dbt__capoluoghi = MAIN_PATH + 'COB__SelWeatherStations__Capoluoghi__DBT.csv'
 
 url__cti__dict_regions      = MAIN_PATH + 'CTI__dict__Regions.json'
 url__cti__geoson_regions    = MAIN_PATH + 'limits_IT_regions.geojson'
 url__cti__geoson_provinces  = MAIN_PATH + 'limits_IT_provinces.geojson'
-#
-#
-#
-#
-#
-# Load CTI and COB stations list
+
 url__CTI__stations  = MAIN_PATH + 'CTI__WeatherStations.csv'
 url__COB__stations  = MAIN_PATH + 'COB__SelWeatherStations.csv'
 url__COB_capo__stations  = MAIN_PATH + 'COB__CapoWeatherStations.csv'
-
+#
+#
+#
+#
+#
 @st.cache_resource
 def LoadData__locations_CTI_COB():
     df_CTI = pd.read_csv(url__CTI__stations)
@@ -66,15 +61,12 @@ def LoadData__locations_CTI_COB():
 
 df_locations_CTI,df_locations_COB, df_locations_COB_capo = LoadData__locations_CTI_COB()
 
-
-
 # Load Capoluoghi dataframe
 @st.cache_resource
 def LoadData__capoluoghi():
     df = pd.read_csv(url__cti__df_capoluoghi, index_col=False, keep_default_na=False)
     return df
 df_capoluoghi = LoadData__capoluoghi()
-
 
 
 # Load DBT for CTI and COB datasets
@@ -85,7 +77,6 @@ def LoadData__DBT__CTI_COB__all():
     return df_CTI, df_COB
 
 df_CTI_DBT, df_COB_DBT = LoadData__DBT__CTI_COB__all()
-
 
 
 # Load DBT for Capoluoghi selected COB datasets
